@@ -37,17 +37,15 @@ My goal was to make this program easy to integrate into Home Assistant, as well 
 
 This project still needs a LOT of work!
 
-As of 1/21/2023, the program changes the image to a hardcoded 16x16 Home Assistant Logo, and uses a hardcoded IP address for the device. That means as of the writing of this paragraph, if you want to use this, you will need to update the values of `path` and `device_ip`. It *also* means that the program will only ever convert one hardcoded image, and send it to a single device, as of the time of writing.
-
 ## TODO
 
 - [x] exactly 16x16 pixels image loading
-- [x] `off` function (turns the device off, only takes the IP address)
-- [x] a builder function called `new`
+- [ ] `off` function (turns the device off, only takes the IP address)
+- [x] a builder function called `from_args`
 - [x] Conversion logic from pixels, to WLED JSON API
 - [ ] Image resizing (Currently the image must be exactly 16x16)
 - [ ] LED panel resizing
-- [ ] Command line argument handling
+- [x] Command line argument handling
 - [ ] Saving settings to reduce arg typing
 - [ ] A more prettified terminal interface (perhaps with [tui-rs](https://github.com/fdehau/tui-rs)?)
 
