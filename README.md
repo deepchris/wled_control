@@ -43,8 +43,8 @@ This project still needs a LOT of work!
 - [ ] `off` function (turns the device off, only takes the IP address)
 - [x] a builder function called `from_args`
 - [x] Conversion logic from pixels, to WLED JSON API
-- [ ] Image resizing (Currently the image must be exactly 16x16)
-- [ ] LED panel resizing
+- [x] Image resizing
+- [x] LED panel resizing
 - [x] Command line argument handling
 - [ ] Saving settings to reduce arg typing
 - [ ] A more prettified terminal interface (perhaps with [tui-rs](https://github.com/fdehau/tui-rs)?)
