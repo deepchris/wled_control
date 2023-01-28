@@ -40,7 +40,7 @@ This project still needs a LOT of work!
 ## TODO
 
 - [x] exactly 16x16 pixels image loading
-- [ ] `off` function (turns the device off, only takes the IP address)
+- [x] `off` function (turns the device off, only takes the IP address)
 - [x] a builder function called `from_args`
 - [x] Conversion logic from pixels, to WLED JSON API
 - [x] Image resizing
