@@ -16,7 +16,7 @@ use image::imageops::Lanczos3;
 
 struct WledValue {
     brightness: Option<u8>,
-    on: Option<bool>,
+    off: bool,
     ip: Option<IpAddr>,
     data: String,
     height: Option<u32>,
@@ -30,7 +30,7 @@ impl WledValue {
     fn from_args(args: &Args) -> WledValue {
         WledValue {
             brightness: args.brightness,
-            on: args.on,
+            off: args.off,
             ip: args.ip,
             data: std_default::default(),
             height: args.height,
@@ -49,6 +49,29 @@ impl WledValue {
 
         let mut json_full: String = json_header + &self.data;
         json_full.push_str(&json_tail);
+
+        // TODO: Remove unwrap, handle errors in more robust manner.
+        let mut headers = http::HeaderMap::new();
+        headers.insert(USER_AGENT, HeaderValue::from_str("curl/7.85.0").unwrap());
+        headers.insert(
+            CONTENT_TYPE,
+            HeaderValue::from_str("application/json").unwrap(),
+        );
+
+        let client = Client::new();
+        let res = client
+            .post(url)
+            .headers(headers)
+            .body(json_full)
+            .send()
+            .await?;
+        Ok(res)
+    }
+
+    async fn off(&self) -> std::result::Result<Response, Error> {
+        let url = format!("http://{:?}/json/state", self.ip);
+
+        let json_full: String = "{\"on\":false}".to_owned();
 
         // TODO: Remove unwrap, handle errors in more robust manner.
         let mut headers = http::HeaderMap::new();
@@ -209,9 +232,9 @@ struct Args {
     #[arg(short, long="bright")]
     brightness: Option<u8>,
 
-    /// Whether to turn the panel off or not.
-    #[arg(short, long)]
-    on: Option<bool>,
+    /// If this is set, all other arguments (besides the IP) are ignored, and the panel is just turned off.
+    #[arg(short, long, action = clap::ArgAction::SetTrue)]
+    off: bool,
 
     /// IP address or hostname of the WLED device to control.
     #[arg(short, long)]
@@ -251,7 +274,13 @@ async fn main() {
         let _ = wled.load_image(x, &args);
         // after the image is parsed, send the new WledValue values to the LED controller
         let response = wled.send_updates().await;
-        println!("Response was:\n{:?}", response);
+
+        match response {
+            Err(_) => println!("Error: Was not able to reach device, or didn't get a response."),
+            Ok(_) => println!("Success! The device sent back a success message.")
+        }
+
+        // println!("Response was:\n{:?}", response);
     } else {
         eprintln!("Error: A path to an image is required for what you are trying to do.");
     }
